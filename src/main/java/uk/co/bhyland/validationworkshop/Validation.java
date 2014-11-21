@@ -8,7 +8,7 @@ public abstract class Validation<Failure, T> {
 
     /*
     Implement the following to make the tests pass.
-    Do not change these signatures relating to Validation instantiation.
+    Feel free to change anything about the implementation, so long as the tests (or something with the same intent) still pass.
     */
 
     private Validation() {}
@@ -20,11 +20,6 @@ public abstract class Validation<Failure, T> {
     public static <Failure, T> Validation<Failure, T> failure(Failure value, Failure... values) {
         throw new UnsupportedOperationException("not implemented yet");
     }
-
-    /*
-    Implement the following to make the tests pass.
-    Feel free to change anything about the implementation, so long as the tests (or something with the same intent) still pass.
-    */
 
     public <U> U fold(Function<T, U> ifSuccess, Function<List<Failure>, U> ifFailure) {
         throw new UnsupportedOperationException("not implemented yet");

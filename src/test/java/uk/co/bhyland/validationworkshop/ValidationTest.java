@@ -141,6 +141,9 @@ public class ValidationTest {
 
     Extra credit:
 
+    0.
+    Is there anything in this exercise that can be replaced by features from the Stream api (or anything introduced in Java 8)?
+
     1.
     Surely there must some things about the design of what we have so far that could be improved.
     Can you identify anything? If so, can you change the design, keep the current tests working, and add any additional tests we need?
@@ -148,7 +151,7 @@ public class ValidationTest {
     2.
     We've tested a powerful but pretty small api.
     Can you think of any functionality you would like to use that can be derived from what we've seen so far?
-    If so, suggest, test and implement them!
+    If so, suggest, test and implement!
 
     */
 }
