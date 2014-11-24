@@ -10,6 +10,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.*;
 import static uk.co.bhyland.validationworkshop.Failure.*;
+import static uk.co.bhyland.validationworkshop.TestUtils.failingFunction;
 import static uk.co.bhyland.validationworkshop.TestUtils.isFailureOf;
 import static uk.co.bhyland.validationworkshop.TestUtils.isSuccessOf;
 import static uk.co.bhyland.validationworkshop.Validation.failure;
@@ -85,7 +86,7 @@ public class ValidationTest {
     @Test
     public void shouldNotTransformFailureWithMap() {
         final Validation<Failure, String> v1 = failure(OH_DEAR);
-        final Validation<Failure, Integer> v2 = v1.map(TestUtils::fail);
+        final Validation<Failure, Integer> v2 = v1.map(failingFunction());
 
         assertThat(v1, sameInstance(v2));
     }
@@ -103,7 +104,7 @@ public class ValidationTest {
     @Test
     public void shouldNotTransformFailureWithFlatMap() {
         final Validation<Failure, String> v1 = failure(OH_DEAR);
-        final Validation<Failure, Integer> v2 = v1.flatMap(TestUtils::fail);
+        final Validation<Failure, Integer> v2 = v1.flatMap(failingFunction());
 
         assertThat(v1, sameInstance(v2));
     }
@@ -111,7 +112,7 @@ public class ValidationTest {
     @Test
     public void shouldTransformSuccessWithFold() {
         final Validation<Failure, String> v1 = success("yay");
-        final Integer l = v1.fold(String::length, TestUtils::fail);
+        final Integer l = v1.fold(String::length, failingFunction());
 
         assertThat(l, is(3));
     }
@@ -119,7 +120,7 @@ public class ValidationTest {
     @Test
     public void shouldTransformFailureWithFold() {
         final Validation<Failure, String> v1 = failure(OH_DEAR, WHAT_A_PITY);
-        final Integer l = v1.fold(TestUtils::fail, List::size);
+        final Integer l = v1.fold(failingFunction(), List::size);
 
         assertThat(l, is(2));
     }
@@ -127,18 +128,17 @@ public class ValidationTest {
     @Test
     public void shouldApplyFunctionInContextOfValidationToSuccess() {
         final Validation<Failure, String> v1 = success("yay");
-        final Validation<Failure, Integer> v2 = v1.apply(success(String::length));
+        final Validation<Failure, Integer> v2 = v1.apply(Validation.<Failure, Function<String, Integer>>success(String::length));
         final Validation<Failure, Integer> v3 = v1.apply(failure(OH_DEAR));
 
         assertThat(v2, isSuccessOf(3));
         assertThat(v3, isFailureOf(OH_DEAR));
     }
 
-
     @Test
     public void shouldApplyFunctionInContextOfValidationToFailure() {
         final Validation<Failure, String> v1 = failure(OH_DEAR);
-        final Validation<Failure, Integer> v2 = v1.apply(success(TestUtils::fail));
+        final Validation<Failure, Integer> v2 = v1.apply(success(failingFunction()));
         final Validation<Failure, Integer> v3 = v1.apply(failure(WHAT_A_PITY, NOT_MY_FAULT_GUV));
 
         assertThat(v2, sameInstance(v1));
@@ -172,7 +172,7 @@ public class ValidationTest {
     @Test
     public void shouldTraverseListWithFailureValidations() {
         final List<Validation<Failure, String>> validations = Arrays.asList(failure(OH_DEAR), success("b"), failure(WHAT_A_PITY, NOT_MY_FAULT_GUV));
-        final Validation<Failure, List<String>> traversed = Validation.traverse(validations, TestUtils::fail);
+        final Validation<Failure, List<String>> traversed = Validation.traverse(validations, failingFunction());
 
         assertThat(traversed, isFailureOf(OH_DEAR, WHAT_A_PITY, NOT_MY_FAULT_GUV));
     }
@@ -180,7 +180,7 @@ public class ValidationTest {
     @Test
     public void shouldLiftFunctionIntoContextOfValidation() {
         final Function<Validation<Failure, String>, Validation<Failure, Integer>> liftedLength = Validation.lift(String::length);
-        final Function<Validation<Failure, String>, Validation<Failure, Integer>> liftedFail = Validation.lift(TestUtils::fail);
+        final Function<Validation<Failure, String>, Validation<Failure, Integer>> liftedFail = Validation.lift(failingFunction());
         final Validation<Failure, String> v1 = success("bb");
         final Validation<Failure, String> v2 = failure(OH_DEAR);
 
@@ -196,7 +196,7 @@ public class ValidationTest {
         final Validation<Failure, Integer> v4 = failure(NOT_MY_FAULT_GUV);
 
         final Validation<Failure, String> formatted1 = Validation.map2(v1, v2, a -> b -> String.format("%s %d", a, b));
-        final Validation<Failure, String> formatted2 = Validation.map2(v3, v4, TestUtils::fail);
+        final Validation<Failure, String> formatted2 = Validation.map2(v3, v4, failingFunction());
         final Validation<Failure, String> formatted3 = Validation.map2(v2, v3, a -> b -> String.format("%s %s", a, b));
 
         assertThat(formatted1, isSuccessOf("yay 3"));
@@ -213,7 +213,7 @@ public class ValidationTest {
         final Validation<Failure, Integer> v5 = failure(NOT_MY_FAULT_GUV);
 
         final Validation<Failure, String> formatted1 = Validation.map3(v1, v2, v3, a -> b -> c -> String.format("%s %d %s", a, b, c));
-        final Validation<Failure, String> formatted2 = Validation.map3(v4, v5, v1, TestUtils::fail);
+        final Validation<Failure, String> formatted2 = Validation.map3(v4, v5, v1, failingFunction());
         final Validation<Failure, String> formatted3 = Validation.map3(v3, v4, v5, a -> b -> c -> String.format("%s %s %d", a, b, c));
 
         assertThat(formatted1, isSuccessOf("yay 3"));

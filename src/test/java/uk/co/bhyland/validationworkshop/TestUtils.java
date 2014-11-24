@@ -7,6 +7,7 @@ import org.hamcrest.TypeSafeMatcher;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 public final class TestUtils {
 
@@ -43,6 +44,15 @@ public final class TestUtils {
                 failures.add(value);
                 failures.addAll(Arrays.asList(values));
                 description.appendText("matches Validations which are failures containing " + Arrays.deepToString(failures.toArray()));
+            }
+        };
+    }
+
+    public static <T, U> Function<T, U> failingFunction() {
+        return new Function<T, U>() {
+            @Override
+            public U apply(T t) {
+                return fail(t);
             }
         };
     }
