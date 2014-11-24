@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.*;
 import static uk.co.bhyland.validationworkshop.Failure.*;
 import static uk.co.bhyland.validationworkshop.TestUtils.failingFunction;
@@ -64,7 +63,7 @@ public class ValidationTest {
         final Validation<Failure, String> v1 = success("yay");
         final Validation<Failure, String> v2 = v1.orElse(TestUtils::fail);
 
-        assertThat(v1, sameInstance(v2));
+        assertThat(v1, is(v2));
     }
 
     @Test
@@ -88,25 +87,7 @@ public class ValidationTest {
         final Validation<Failure, String> v1 = failure(OH_DEAR);
         final Validation<Failure, Integer> v2 = v1.map(failingFunction());
 
-        assertThat(v1, sameInstance(v2));
-    }
-
-    @Test
-    public void shouldTransformSuccessWithFlatMap() {
-        final Validation<Failure, String> v1 = success("yay");
-        final Validation<Failure, Integer> v2 = v1.flatMap(t -> success(t.length()));
-        final Validation<Failure, Integer> v3 = v1.flatMap(t -> failure(OH_DEAR));
-
-        assertThat(v2, isSuccessOf(3));
-        assertThat(v3, isFailureOf(OH_DEAR));
-    }
-
-    @Test
-    public void shouldNotTransformFailureWithFlatMap() {
-        final Validation<Failure, String> v1 = failure(OH_DEAR);
-        final Validation<Failure, Integer> v2 = v1.flatMap(failingFunction());
-
-        assertThat(v1, sameInstance(v2));
+        assertThat(v1, is(v2));
     }
 
     @Test
@@ -126,6 +107,36 @@ public class ValidationTest {
     }
 
     @Test
+    public void shouldLiftFunctionIntoContextOfValidation() {
+        final Function<Validation<Failure, String>, Validation<Failure, Integer>> liftedLength = Validation.lift(String::length);
+        final Function<Validation<Failure, String>, Validation<Failure, Integer>> liftedFail = Validation.lift(failingFunction());
+        final Validation<Failure, String> v1 = success("bb");
+        final Validation<Failure, String> v2 = failure(OH_DEAR);
+
+        assertThat(liftedLength.apply(v1), isSuccessOf(2));
+        assertThat(liftedFail.apply(v2), is(v2));
+    }
+
+    @Test
+    public void shouldTransformSuccessWithFlatMap() {
+        final Validation<Failure, String> v1 = success("yay");
+        final Validation<Failure, Integer> v2 = v1.flatMap(t -> success(t.length()));
+        final Validation<Failure, Integer> v3 = v1.flatMap(t -> failure(OH_DEAR));
+
+        assertThat(v2, isSuccessOf(3));
+        assertThat(v3, isFailureOf(OH_DEAR));
+    }
+
+    @Test
+    public void shouldNotTransformFailureWithFlatMap() {
+        final Validation<Failure, String> v1 = failure(OH_DEAR);
+        final Validation<Failure, Integer> v2 = v1.flatMap(failingFunction());
+
+        assertThat(v1, is(v2));
+    }
+
+    /* harder */
+    @Test
     public void shouldApplyFunctionInContextOfValidationToSuccess() {
         final Validation<Failure, String> v1 = success("yay");
         final Validation<Failure, Integer> v2 = v1.apply(Validation.<Failure, Function<String, Integer>>success(String::length));
@@ -135,16 +146,18 @@ public class ValidationTest {
         assertThat(v3, isFailureOf(OH_DEAR));
     }
 
+    /* harder */
     @Test
     public void shouldApplyFunctionInContextOfValidationToFailure() {
         final Validation<Failure, String> v1 = failure(OH_DEAR);
         final Validation<Failure, Integer> v2 = v1.apply(success(failingFunction()));
         final Validation<Failure, Integer> v3 = v1.apply(failure(WHAT_A_PITY, NOT_MY_FAULT_GUV));
 
-        assertThat(v2, sameInstance(v1));
+        assertThat(v2, is(v1));
         assertThat(v3, isFailureOf(OH_DEAR, WHAT_A_PITY, NOT_MY_FAULT_GUV));
     }
 
+    /* harder */
     @Test
     public void shouldSequenceListOfSuccessValidations() {
         final List<Validation<Failure, String>> validations = Arrays.asList(success("a"), success("b"), success("c"));
@@ -153,6 +166,7 @@ public class ValidationTest {
         assertThat(sequenced, isSuccessOf(Arrays.asList("a", "b", "c")));
     }
 
+    /* harder */
     @Test
     public void shouldSequenceListWithFailureValidations() {
         final List<Validation<Failure, String>> validations = Arrays.asList(failure(OH_DEAR), success("b"), failure(WHAT_A_PITY, NOT_MY_FAULT_GUV));
@@ -161,6 +175,7 @@ public class ValidationTest {
         assertThat(sequenced, isFailureOf(OH_DEAR, WHAT_A_PITY, NOT_MY_FAULT_GUV));
     }
 
+    /* harder */
     @Test
     public void shouldTraverseListOfSuccessValidations() {
         final List<Validation<Failure, String>> validations = Arrays.asList(success("a"), success("bb"), success("ccc"));
@@ -169,6 +184,7 @@ public class ValidationTest {
         assertThat(traversed, isSuccessOf(Arrays.asList(1, 2, 3)));
     }
 
+    /* harder */
     @Test
     public void shouldTraverseListWithFailureValidations() {
         final List<Validation<Failure, String>> validations = Arrays.asList(failure(OH_DEAR), success("b"), failure(WHAT_A_PITY, NOT_MY_FAULT_GUV));
@@ -177,17 +193,7 @@ public class ValidationTest {
         assertThat(traversed, isFailureOf(OH_DEAR, WHAT_A_PITY, NOT_MY_FAULT_GUV));
     }
 
-    @Test
-    public void shouldLiftFunctionIntoContextOfValidation() {
-        final Function<Validation<Failure, String>, Validation<Failure, Integer>> liftedLength = Validation.lift(String::length);
-        final Function<Validation<Failure, String>, Validation<Failure, Integer>> liftedFail = Validation.lift(failingFunction());
-        final Validation<Failure, String> v1 = success("bb");
-        final Validation<Failure, String> v2 = failure(OH_DEAR);
-
-        assertThat(liftedLength.apply(v1), isSuccessOf(2));
-        assertThat(liftedFail.apply(v2), sameInstance(v2));
-    }
-
+    /* harder */
     @Test
     public void shouldTransformValidationsWithMap2() {
         final Validation<Failure, String> v1 = success("yay");
@@ -204,6 +210,7 @@ public class ValidationTest {
         assertThat(formatted3, isFailureOf(OH_DEAR, WHAT_A_PITY));
     }
 
+    /* harder */
     @Test
     public void shouldTransformValidationsWithMap3() {
         final Validation<Failure, String> v1 = success("woo");
@@ -216,9 +223,9 @@ public class ValidationTest {
         final Validation<Failure, String> formatted2 = Validation.map3(v4, v5, v1, failingFunction());
         final Validation<Failure, String> formatted3 = Validation.map3(v3, v4, v5, a -> b -> c -> String.format("%s %s %d", a, b, c));
 
-        assertThat(formatted1, isSuccessOf("yay 3"));
+        assertThat(formatted1, isSuccessOf("woo 3 yay"));
         assertThat(formatted2, isFailureOf(OH_DEAR, WHAT_A_PITY, NOT_MY_FAULT_GUV));
-        assertThat(formatted3, isFailureOf(OH_DEAR, WHAT_A_PITY));
+        assertThat(formatted3, isFailureOf(OH_DEAR, WHAT_A_PITY, NOT_MY_FAULT_GUV));
     }
 
     /*
