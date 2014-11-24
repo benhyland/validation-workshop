@@ -1,7 +1,6 @@
 package uk.co.bhyland.validationworkshop;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -10,19 +9,19 @@ Implement the following to make the tests pass.
 Feel free to change anything about the implementation, so long as the tests (or something with the same intent) still pass.
 */
 
-public abstract class Validation<Failure, T> {
+public abstract class Validation<E, T> {
 
     private Validation() {}
 
-    public static <Failure, T> Validation<Failure, T> success(T value) {
+    public static <E, T> Validation<E, T> success(T value) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public static <Failure, T> Validation<Failure, T> failure(Failure value, Failure... values) {
+    public static <E, T> Validation<E, T> failure(E value, E... values) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public <U> U fold(Function<T, U> ifSuccess, Function<List<Failure>, U> ifFailure) {
+    public <U> U fold(Function<T, U> ifSuccess, Function<List<E>, U> ifFailure) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -38,41 +37,41 @@ public abstract class Validation<Failure, T> {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public Validation<Failure, T> orElse(Supplier<Validation<Failure, T>> defaultValue) {
+    public Validation<E, T> orElse(Supplier<Validation<E, T>> defaultValue) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public <U> Validation<Failure, U> map(Function<T, U> f) {
+    public <U> Validation<E, U> map(Function<T, U> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public <U> Validation<Failure, U> flatMap(Function<T, Validation<Failure, U>> f) {
+    public <U> Validation<E, U> flatMap(Function<T, Validation<E, U>> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public <U> Validation<Failure, U> apply(final Validation<Failure, Function<T, U>> functionValidation) {
+    public <U> Validation<E, U> apply(final Validation<E, Function<T, U>> functionValidation) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public static <Failure, T> Validation<Failure, List<T>> sequence(List<Validation<Failure, T>> validations) {
+    public static <E, T> Validation<E, List<T>> sequence(List<Validation<E, T>> validations) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public static <Failure, T, U> Validation<Failure, List<U>> traverse(List<Validation<Failure, T>> validations, Function<T, U> f) {
+    public static <E, T, U> Validation<E, List<U>> traverse(List<Validation<E, T>> validations, Function<T, U> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public static <Failure, T, U> Function<Validation<Failure, T>, Validation<Failure, U>> lift(Function<T, U> f) {
+    public static <E, T, U> Function<Validation<E, T>, Validation<E, U>> lift(Function<T, U> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public static <Failure, A, B, Result> Validation<Failure, Result> map2(Validation<Failure, A> va, Validation<Failure, B> vb,
-                                                                           Function<A, Function<B, Result>> f) {
+    public static <E, A, B, R> Validation<E, R> map2(Validation<E, A> va, Validation<E, B> vb,
+                                                     Function<A, Function<B, R>> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public static <Failure, A, B, C, Result> Validation<Failure, Result> map3(Validation<Failure, A> va, Validation<Failure, B> vb, Validation<Failure, C> vc,
-                                                                              Function<A, Function<B, Function<C, Result>>> f) {
+    public static <E, A, B, C, R> Validation<E, R> map3(Validation<E, A> va, Validation<E, B> vb, Validation<E, C> vc,
+                                                        Function<A, Function<B, Function<C, R>>> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -83,7 +82,7 @@ public abstract class Validation<Failure, T> {
         throw new UnsupportedOperationException("no cheating");
     }
 
-    public List<T> getFailures() {
+    public List<E> getFailures() {
         throw new UnsupportedOperationException("no cheating");
     }
     */
