@@ -107,17 +107,6 @@ public class ValidationTest {
     }
 
     @Test
-    public void shouldLiftFunctionIntoContextOfValidation() {
-        final Function<Validation<Failure, String>, Validation<Failure, Integer>> liftedLength = Validation.lift(String::length);
-        final Function<Validation<Failure, String>, Validation<Failure, Integer>> liftedFail = Validation.lift(failingFunction());
-        final Validation<Failure, String> v1 = success("bb");
-        final Validation<Failure, String> v2 = failure(OH_DEAR);
-
-        assertThat(liftedLength.apply(v1), isSuccessOf(2));
-        assertThat(liftedFail.apply(v2), is(v2));
-    }
-
-    @Test
     public void shouldTransformSuccessWithFlatMap() {
         final Validation<Failure, String> v1 = success("yay");
         final Validation<Failure, Integer> v2 = v1.flatMap(t -> success(t.length()));

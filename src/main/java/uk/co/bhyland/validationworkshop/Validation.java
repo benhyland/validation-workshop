@@ -61,10 +61,6 @@ public abstract class Validation<E, T> {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public static <E, T, U> Function<Validation<E, T>, Validation<E, U>> lift(Function<T, U> f) {
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
     public static <E, A, B, R> Validation<E, R> map2(Validation<E, A> va, Validation<E, B> vb,
                                                      Function<A, Function<B, R>> f) {
         throw new UnsupportedOperationException("not implemented yet");
