@@ -244,7 +244,7 @@ public class ValidationTest {
 
     /*
 
-    Extra credit:
+    Discussion questions:
 
     0.
     Is there anything in this exercise that can be replaced by features from the Stream api (or anything introduced in Java 8)?
@@ -258,9 +258,8 @@ public class ValidationTest {
     Can you identify anything? If so, can you change the design, keep the current tests working, and add any additional tests we need?
 
     3.
-    We've tested a powerful but pretty small api.
+    We've implemented and done some basic testing of a powerful but pretty small api.
     Can you think of any functionality you would like to use that can be derived from what we've seen so far?
-    If so, suggest, test and implement!
 
     4.
     You may have found ways of implementing parts of the api in terms of other parts. What is the minimum api surface necessary to
