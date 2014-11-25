@@ -13,8 +13,12 @@ public final class TestUtils {
 
     private TestUtils() {}
 
-    public static <T> T fail(Object... args) {
+    public static <T> T fail(final Object... args) {
         throw new AssertionError("unexpected call to fail with args " + Arrays.deepToString(args));
+    }
+
+    public static <T, U> Function<T, U> failingFunction() {
+        return TestUtils::fail;
     }
 
     public static <E, T> Matcher<Validation<E, T>> isSuccessOf(T value) {
@@ -31,6 +35,7 @@ public final class TestUtils {
         };
     }
 
+    @SafeVarargs
     public static <E, T> Matcher<Validation<E, T>> isFailureOf(E value, E... values) {
         final List<E> expected = new ArrayList<>(values.length + 1);
         expected.add(value);
@@ -47,9 +52,5 @@ public final class TestUtils {
                 description.appendText("Validation failure containing " + Arrays.deepToString(expected.toArray()));
             }
         };
-    }
-
-    public static <T, U> Function<T, U> failingFunction() {
-        return TestUtils::fail;
     }
 }

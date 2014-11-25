@@ -23,6 +23,7 @@ public class ValidationTest {
 
     @Test
     public void shouldProduceSuccessFromSuccessFactory() {
+
         final Validation<Failure, String> v = success("yay");
 
         assertTrue(v.isSuccess());
@@ -31,6 +32,7 @@ public class ValidationTest {
 
     @Test
     public void shouldProduceFailureFromFailureFactory() {
+
         final Validation<Failure, String> v1 = failure(OH_DEAR);
 
         assertFalse(v1.isSuccess());
@@ -44,6 +46,7 @@ public class ValidationTest {
 
     @Test
     public void shouldGetSuccessValueFromSuccess() {
+
         final Validation<Failure, String> v1 = success("yay");
         final String value = v1.getOrElse(TestUtils::fail);
 
@@ -52,6 +55,7 @@ public class ValidationTest {
 
     @Test
     public void shouldGetDefaultValueFromFailure() {
+
         final Validation<Failure, String> v1 = failure(OH_DEAR);
         final String value = v1.getOrElse(() -> "boo");
 
@@ -60,6 +64,7 @@ public class ValidationTest {
 
     @Test
     public void shouldGetValidationSuccessValueFromSuccess() {
+
         final Validation<Failure, String> v1 = success("yay");
         final Validation<Failure, String> v2 = v1.orElse(TestUtils::fail);
 
@@ -68,6 +73,7 @@ public class ValidationTest {
 
     @Test
     public void shouldGetDefaultValidationValueFromFailure() {
+
         final Validation<Failure, String> v1 = failure(OH_DEAR);
         final Validation<Failure, String> v2 = v1.orElse(() -> success("boo"));
 
@@ -76,6 +82,7 @@ public class ValidationTest {
 
     @Test
     public void shouldTransformSuccessWithMap() {
+
         final Validation<Failure, String> v1 = success("yay");
         final Validation<Failure, Integer> v2 = v1.map(String::length);
 
@@ -84,6 +91,7 @@ public class ValidationTest {
 
     @Test
     public void shouldNotTransformFailureWithMap() {
+
         final Validation<Failure, String> v1 = failure(OH_DEAR);
         final Validation<Failure, Integer> v2 = v1.map(failingFunction());
 
@@ -92,6 +100,7 @@ public class ValidationTest {
 
     @Test
     public void shouldTransformSuccessWithFold() {
+
         final Validation<Failure, String> v1 = success("yay");
         final Integer l = v1.fold(String::length, failingFunction());
 
@@ -100,6 +109,7 @@ public class ValidationTest {
 
     @Test
     public void shouldTransformFailureWithFold() {
+
         final Validation<Failure, String> v1 = failure(OH_DEAR, WHAT_A_PITY);
         final Integer l = v1.fold(failingFunction(), List::size);
 
@@ -108,6 +118,7 @@ public class ValidationTest {
 
     @Test
     public void shouldTransformSuccessWithFlatMap() {
+
         final Validation<Failure, String> v1 = success("yay");
         final Validation<Failure, Integer> v2 = v1.flatMap(t -> success(t.length()));
         final Validation<Failure, Integer> v3 = v1.flatMap(t -> failure(OH_DEAR));
@@ -118,17 +129,24 @@ public class ValidationTest {
 
     @Test
     public void shouldNotTransformFailureWithFlatMap() {
+
         final Validation<Failure, String> v1 = failure(OH_DEAR);
         final Validation<Failure, Integer> v2 = v1.flatMap(failingFunction());
 
         assertThat(v1, is(v2));
     }
 
+    /*
+    Below here, most people will find the implementation a bit harder.
+    Don't get discouraged, it's more of a plateau than a continual increase in difficulty.
+    */
+
     /* harder */
     @Test
     public void shouldApplyFunctionInContextOfValidationToSuccess() {
+
         final Validation<Failure, String> v1 = success("yay");
-        final Validation<Failure, Integer> v2 = v1.apply(Validation.<Failure, Function<String, Integer>>success(String::length));
+        final Validation<Failure, Integer> v2 = v1.apply(success((Function<String, Integer>)String::length));
         final Validation<Failure, Integer> v3 = v1.apply(failure(OH_DEAR));
 
         assertThat(v2, isSuccessOf(3));
@@ -138,6 +156,7 @@ public class ValidationTest {
     /* harder */
     @Test
     public void shouldApplyFunctionInContextOfValidationToFailure() {
+
         final Validation<Failure, String> v1 = failure(OH_DEAR);
         final Validation<Failure, Integer> v2 = v1.apply(success(failingFunction()));
         final Validation<Failure, Integer> v3 = v1.apply(failure(WHAT_A_PITY, NOT_MY_FAULT_GUV));
@@ -149,6 +168,7 @@ public class ValidationTest {
     /* harder */
     @Test
     public void shouldSequenceListOfSuccessValidations() {
+
         final List<Validation<Failure, String>> validations = Arrays.asList(success("a"), success("b"), success("c"));
         final Validation<Failure, List<String>> sequenced = Validation.sequence(validations);
 
@@ -158,6 +178,7 @@ public class ValidationTest {
     /* harder */
     @Test
     public void shouldSequenceListWithFailureValidations() {
+
         final List<Validation<Failure, String>> validations = Arrays.asList(failure(OH_DEAR), success("b"), failure(WHAT_A_PITY, NOT_MY_FAULT_GUV));
         final Validation<Failure, List<String>> sequenced = Validation.sequence(validations);
 
@@ -167,6 +188,7 @@ public class ValidationTest {
     /* harder */
     @Test
     public void shouldTraverseListOfSuccessValidations() {
+
         final List<Validation<Failure, String>> validations = Arrays.asList(success("a"), success("bb"), success("ccc"));
         final Validation<Failure, List<Integer>> traversed = Validation.traverse(validations, String::length);
 
@@ -176,6 +198,7 @@ public class ValidationTest {
     /* harder */
     @Test
     public void shouldTraverseListWithFailureValidations() {
+
         final List<Validation<Failure, String>> validations = Arrays.asList(failure(OH_DEAR), success("b"), failure(WHAT_A_PITY, NOT_MY_FAULT_GUV));
         final Validation<Failure, List<String>> traversed = Validation.traverse(validations, failingFunction());
 
@@ -185,6 +208,7 @@ public class ValidationTest {
     /* harder */
     @Test
     public void shouldTransformValidationsWithMap2() {
+
         final Validation<Failure, String> v1 = success("yay");
         final Validation<Failure, Integer> v2 = success(3);
         final Validation<Failure, String> v3 = failure(OH_DEAR, WHAT_A_PITY);
@@ -202,6 +226,7 @@ public class ValidationTest {
     /* harder */
     @Test
     public void shouldTransformValidationsWithMap3() {
+
         final Validation<Failure, String> v1 = success("woo");
         final Validation<Failure, Integer> v2 = success(3);
         final Validation<Failure, String> v3 = success("yay");
