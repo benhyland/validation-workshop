@@ -165,6 +165,16 @@ public abstract class Validation<E, T> {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    /**
+     * Return a Validation containing the success values of the given Validations transformed by the given curried function, if available;
+     * otherwise, return a Validation containing the error values.
+     * Not tested: implementing this is optional.
+     */
+    public static <E, A, B, C, D, R> Validation<E, R> map4(Validation<E, A> va, Validation<E, B> vb, Validation<E, C> vc, Validation<E, D> vd,
+                                                        Function<A, Function<B, Function<C, Function<D, R>>>> f) {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
     /*
     Do *not* implement the following, or anything isomorphic.
 

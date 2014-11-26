@@ -11,9 +11,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static uk.co.bhyland.validationworkshop.Failure.OH_DEAR;
 import static uk.co.bhyland.validationworkshop.Failure.WHAT_A_PITY;
-import static uk.co.bhyland.validationworkshop.TestUtils.failingFunction;
-import static uk.co.bhyland.validationworkshop.TestUtils.isFailureOf;
-import static uk.co.bhyland.validationworkshop.TestUtils.isSuccessOf;
+import static uk.co.bhyland.validationworkshop.TestUtils.*;
 import static uk.co.bhyland.validationworkshop.Validation.failure;
 import static uk.co.bhyland.validationworkshop.Validation.success;
 

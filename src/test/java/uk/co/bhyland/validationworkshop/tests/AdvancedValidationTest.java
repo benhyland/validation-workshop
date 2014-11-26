@@ -9,11 +9,9 @@ import java.util.List;
 import java.util.function.Function;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static uk.co.bhyland.validationworkshop.Failure.*;
-import static uk.co.bhyland.validationworkshop.TestUtils.failingFunction;
-import static uk.co.bhyland.validationworkshop.TestUtils.isFailureOf;
-import static uk.co.bhyland.validationworkshop.TestUtils.isSuccessOf;
+import static uk.co.bhyland.validationworkshop.TestUtils.*;
 import static uk.co.bhyland.validationworkshop.Validation.failure;
 import static uk.co.bhyland.validationworkshop.Validation.success;
 

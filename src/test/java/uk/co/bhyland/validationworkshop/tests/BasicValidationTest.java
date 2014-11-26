@@ -6,12 +6,8 @@ import uk.co.bhyland.validationworkshop.TestUtils;
 import uk.co.bhyland.validationworkshop.Validation;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static uk.co.bhyland.validationworkshop.Failure.NOT_MY_FAULT_GUV;
-import static uk.co.bhyland.validationworkshop.Failure.OH_DEAR;
-import static uk.co.bhyland.validationworkshop.Failure.WHAT_A_PITY;
+import static org.junit.Assert.*;
+import static uk.co.bhyland.validationworkshop.Failure.*;
 import static uk.co.bhyland.validationworkshop.TestUtils.isSuccessOf;
 import static uk.co.bhyland.validationworkshop.Validation.failure;
 import static uk.co.bhyland.validationworkshop.Validation.success;
