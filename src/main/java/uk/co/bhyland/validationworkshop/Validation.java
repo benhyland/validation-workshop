@@ -1,6 +1,7 @@
 package uk.co.bhyland.validationworkshop;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -80,6 +81,22 @@ public abstract class Validation<E, T> {
     }
 
     /**
+     * Convenience to perform an effect using the success value if this Validation represents a success.
+     * Not tested: implementing this is optional.
+     */
+    public void ifSuccess(Consumer<T> ifSuccess) {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    /**
+     * Convenience to perform an effect using the failure values if this Validation represents a failure.
+     * Not tested: implementing this is optional.
+     */
+    public void ifFailure(Consumer<List<E>> ifFailure) {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    /**
      * Return the success value of this Validation, if available, transformed to a Validation by the given function;
      * otherwise, return a Validation containing the error values.
      */
@@ -93,6 +110,22 @@ public abstract class Validation<E, T> {
      * otherwise, return a Validation containing the all the available error values.
      */
     public <U> Validation<E, U> apply(final Validation<E, Function<T, U>> functionValidation) {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    /**
+     * Specialisation of List.map() that transforms the given list of inputs into a list of Validations by applying the given function.
+     * Unfortunately, List.map() doesn't actually exist, although Stream.map() does.
+     */
+    public static <E, A, B> List<Validation<E, B>> mapInputs(List<A> inputs, Function<A, Validation<E, B>> f) {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    /**
+     * Specialisation of List.flatMap() that transforms the given list of Validations into a new list of Validations by applying the given function.
+     * Unfortunately, List.flatMap() doesn't actually exist, although Stream.flatMap() does.
+     */
+    public static <E, A, B> List<Validation<E, B>> flatMapInputs(List<Validation<E, A>> inputs, Function<A, Validation<E, B>> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 

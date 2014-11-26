@@ -1,6 +1,6 @@
-package uk.co.bhyland.validationworkshop;
+package uk.co.bhyland.validationworkshop.examples;
 
-import org.junit.Test;
+import uk.co.bhyland.validationworkshop.Validation;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.stream;
 import static uk.co.bhyland.validationworkshop.Validation.failure;
 import static uk.co.bhyland.validationworkshop.Validation.success;
 
@@ -23,6 +24,7 @@ public class MotivatingExamples {
 
         examples.validatingExample();
         examples.bailingEarlyValidatingExample();
+        examples.contextSensitiveValidatingExample();
         examples.applicativeCompositionExample();
         examples.orchestratingExample();
     }
@@ -57,6 +59,21 @@ public class MotivatingExamples {
         Validation<String, String> input= Validation.success("c b a");
 
         Validation<String, String> validated = input.flatMap(Checks::checkLength).flatMap(Checks::checkAlphabetic);
+
+        String message = validated.fold(
+                s -> "validation succeeded: " + s,
+                es -> "validation bailed early, first failure encountered was: " + es.get(0)
+        );
+
+        System.out.println(message);
+        System.out.println();
+    }
+
+    public void contextSensitiveValidatingExample() {
+
+        Validation<String, String> input= Validation.success("c b a");
+
+        Validation<String, String> validated = input.flatMap(s -> success(s.split(" "))).flatMap(Checks::checkAndJoin);
 
         String message = validated.fold(
                 s -> "validation succeeded: " + s,
@@ -152,6 +169,14 @@ public class MotivatingExamples {
                 return failure("needs at least " + minWordCount + " words");
             }
             return success(words.length);
+        }
+
+        public static Validation<String, String> checkAndJoin(String[] words) {
+            if (words.length > 2) {
+                return success(stream(words).collect(Collectors.joining(", ")));
+            } else {
+                return failure("not enough words");
+            }
         }
     }
 }
