@@ -8,6 +8,8 @@ import uk.co.bhyland.validationworkshop.Validation;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static uk.co.bhyland.validationworkshop.Failure.*;
+import static uk.co.bhyland.validationworkshop.TestUtils.failTheTestIfCalledFunction;
+import static uk.co.bhyland.validationworkshop.TestUtils.failTheTestIfCalledSupplier;
 import static uk.co.bhyland.validationworkshop.TestUtils.isSuccessOf;
 import static uk.co.bhyland.validationworkshop.Validation.failure;
 import static uk.co.bhyland.validationworkshop.Validation.success;
@@ -45,7 +47,7 @@ public class BasicValidationTest {
     public void shouldGetSuccessValueFromSuccess() {
 
         final Validation<Failure, String> v1 = success("yay");
-        final String value = v1.getOrElse(TestUtils::fail);
+        final String value = v1.getOrElse(failTheTestIfCalledSupplier());
 
         assertThat(value, is("yay"));
     }
@@ -63,7 +65,7 @@ public class BasicValidationTest {
     public void shouldGetValidationSuccessValueFromSuccess() {
 
         final Validation<Failure, String> v1 = success("yay");
-        final Validation<Failure, String> v2 = v1.orElse(TestUtils::fail);
+        final Validation<Failure, String> v2 = v1.orElse(failTheTestIfCalledSupplier());
 
         assertThat(v1, is(v2));
     }
@@ -72,8 +74,10 @@ public class BasicValidationTest {
     public void shouldGetDefaultValidationValueFromFailure() {
 
         final Validation<Failure, String> v1 = failure(OH_DEAR);
-        final Validation<Failure, String> v2 = v1.orElse(() -> success("boo"));
+        final Validation<Failure, String> defaultValue = success("boo");
 
-        assertThat(v2, isSuccessOf("boo"));
+        final Validation<Failure, String> v2 = v1.orElse(() -> defaultValue);
+
+        assertThat(v2, is(defaultValue));
     }
 }

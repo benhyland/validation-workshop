@@ -1,5 +1,7 @@
 package uk.co.bhyland.validationworkshop;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -24,7 +26,7 @@ public abstract class Validation<E, T> {
     /**
      * Produce a Validation representing the success value of type T.
      */
-    public static <E, T> Validation<E, T> success(T value) {
+    public static <E, T> Validation<E, T> success(final T value) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -32,7 +34,7 @@ public abstract class Validation<E, T> {
      * Produce a Validation representing the list of error values of type E.
      */
     @SafeVarargs
-    public static <E, T> Validation<E, T> failure(E value, E... values) {
+    public static <E, T> Validation<E, T> failure(final E value, final E... values) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -50,33 +52,50 @@ public abstract class Validation<E, T> {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    // You may find this utility function useful
+    @SafeVarargs
+    protected static <A> List<A> makeNonEmptyList(final A a, final A... others) {
+        final List<A> list = new ArrayList<>();
+        list.add(a);
+        list.addAll(Arrays.asList(others));
+        return list;
+    }
+
+    // You may find this utility function useful
+    protected static <A> A getHeadOfList(final List<A> nonEmptyList) {
+        return nonEmptyList.get(0);
+    }
+
+    // You may find this utility function useful
+    protected static <A> A[] getTailOfList(final List<A> nonEmptyList) {
+        @SuppressWarnings("unchecked")
+        final A[] tail = (A[]) new Object[nonEmptyList.size() - 1];
+        for (int i = 1; i < nonEmptyList.size(); i++) {
+            tail[i - 1] = nonEmptyList.get(i);
+        }
+        return tail;
+    }
+
     /**
-     * Return the success value of this Validation, if available; otherwise, return the supplied default value.
+     * Return the success value of this Validation, if it represents a success; otherwise, return the supplied default value.
      */
     public T getOrElse(Supplier<T> defaultValue) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
-     * Return a Validation containing the success value of this Validation, if available; otherwise, return the supplied default value.
+     * Return this Validation, if it represents a success; otherwise, return the supplied default Validation.
      */
-    public Validation<E, T> orElse(Supplier<Validation<E, T>> defaultValue) {
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    /**
-     * Return a Validation containing the success value of this Validation, if available, transformed by the given function;
-     * otherwise, return a Validation containing the error values.
-     */
-    public <U> Validation<E, U> map(Function<T, U> f) {
+    public Validation<E, T> orElse(final Supplier<Validation<E, T>> defaultValue) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
      * Run exactly one of the two provided functions, depending on what this Validation represents.
      * Return the result of the selected function.
+     * Hint for later tasks: many things can be implemented in terms of fold.
      */
-    public <U> U fold(Function<T, U> ifSuccess, Function<List<E>, U> ifFailure) {
+    public <U> U fold(final Function<T, U> ifSuccess, final Function<List<E>, U> ifFailure) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -84,7 +103,7 @@ public abstract class Validation<E, T> {
      * Convenience to perform an effect using the success value if this Validation represents a success.
      * Not tested: implementing this is optional.
      */
-    public void ifSuccess(Consumer<T> ifSuccess) {
+    public void ifSuccess(final Consumer<T> ifSuccess) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -92,40 +111,50 @@ public abstract class Validation<E, T> {
      * Convenience to perform an effect using the failure values if this Validation represents a failure.
      * Not tested: implementing this is optional.
      */
-    public void ifFailure(Consumer<List<E>> ifFailure) {
+    public void ifFailure(final Consumer<List<E>> ifFailure) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
-     * Return the success value of this Validation, if available, transformed to a Validation by the given function;
+     * If this Validation represents a success, return a Validation containing the success value transformed by the given function;
      * otherwise, return a Validation containing the error values.
      */
-    public <U> Validation<E, U> flatMap(Function<T, Validation<E, U>> f) {
+    public <U> Validation<E, U> map(final Function<T, U> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
-     * Return a Validation containing the success value of this Validation transformed by the given function,
-     * if both the value and the function are available;
-     * otherwise, return a Validation containing the all the available error values.
+     * If this Validation represents a success, return the success value transformed to a Validation by the given function;
+     * otherwise, return a Validation containing the error values.
      */
-    public <U> Validation<E, U> apply(final Validation<E, Function<T, U>> functionValidation) {
+    public <U> Validation<E, U> flatMap(final Function<T, Validation<E, U>> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
      * Specialisation of List.map() that transforms the given list of inputs into a list of Validations by applying the given function.
      * Unfortunately, List.map() doesn't actually exist, although Stream.map() does.
+     * You won't miss much if you skip this, but it is tested and is used in some of the example code.
      */
-    public static <E, A, B> List<Validation<E, B>> mapInputs(List<A> inputs, Function<A, Validation<E, B>> f) {
+    public static <E, A, B> List<Validation<E, B>> mapInputs(final List<A> inputs, final Function<A, Validation<E, B>> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
      * Specialisation of List.flatMap() that transforms the given list of Validations into a new list of Validations by applying the given function.
      * Unfortunately, List.flatMap() doesn't actually exist, although Stream.flatMap() does.
+     * You won't miss much if you skip this, but it is tested and is used in some of the example code.
      */
-    public static <E, A, B> List<Validation<E, B>> flatMapInputs(List<Validation<E, A>> inputs, Function<A, Validation<E, B>> f) {
+    public static <E, A, B> List<Validation<E, B>> flatMapInputs(final List<Validation<E, A>> inputs, final Function<A, Validation<E, B>> f) {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    /**
+     * If both this Validation and the given Validation represent successes,
+     * return a Validation containing the success value of this Validation transformed by the success value of the given Validation;
+     * otherwise, return a Validation containing the all the available error values.
+     */
+    public <U> Validation<E, U> apply(final Validation<E, Function<T, U>> functionValidation) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -134,7 +163,7 @@ public abstract class Validation<E, T> {
      * If any of the given Validations represented error values, then the resulting Validation contains all available errors;
      * otherwise, it contains a List of all available success values.
      */
-    public static <E, T> Validation<E, List<T>> sequence(List<Validation<E, T>> validations) {
+    public static <E, T> Validation<E, List<T>> sequence(final List<Validation<E, T>> validations) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -143,35 +172,35 @@ public abstract class Validation<E, T> {
      * If any of the given Validations represented error values, then the resulting Validation contains all available errors;
      * otherwise, it contains a List of all available success values, each transformed by the given function.
      */
-    public static <E, T, U> Validation<E, List<U>> traverse(List<Validation<E, T>> validations, Function<T, U> f) {
+    public static <E, T, U> Validation<E, List<U>> traverse(final List<Validation<E, T>> validations, final Function<T, U> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
-     * Return a Validation containing the success values of the given Validations transformed by the given curried function, if available;
-     * otherwise, return a Validation containing the error values.
+     * If any of the given Validations represented error values, then the resulting Validation contains all available errors;
+     * otherwise, it contains the result of transforming the success values of the given Validations with the given curried function.
      */
-    public static <E, A, B, R> Validation<E, R> map2(Validation<E, A> va, Validation<E, B> vb,
-                                                     Function<A, Function<B, R>> f) {
+    public static <E, A, B, R> Validation<E, R> map2(final Validation<E, A> va, final Validation<E, B> vb,
+                                                     final Function<A, Function<B, R>> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
-     * Return a Validation containing the success values of the given Validations transformed by the given curried function, if available;
-     * otherwise, return a Validation containing the error values.
+     * If any of the given Validations represented error values, then the resulting Validation contains all available errors;
+     * otherwise, it contains the result of transforming the success values of the given Validations with the given curried function.
      */
-    public static <E, A, B, C, R> Validation<E, R> map3(Validation<E, A> va, Validation<E, B> vb, Validation<E, C> vc,
-                                                        Function<A, Function<B, Function<C, R>>> f) {
+    public static <E, A, B, C, R> Validation<E, R> map3(final Validation<E, A> va, final Validation<E, B> vb, final Validation<E, C> vc,
+                                                        final Function<A, Function<B, Function<C, R>>> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
-     * Return a Validation containing the success values of the given Validations transformed by the given curried function, if available;
-     * otherwise, return a Validation containing the error values.
+     * If any of the given Validations represented error values, then the resulting Validation contains all available errors;
+     * otherwise, it contains the result of transforming the success values of the given Validations with the given curried function.
      * Not tested: implementing this is optional.
      */
-    public static <E, A, B, C, D, R> Validation<E, R> map4(Validation<E, A> va, Validation<E, B> vb, Validation<E, C> vc, Validation<E, D> vd,
-                                                        Function<A, Function<B, Function<C, Function<D, R>>>> f) {
+    public static <E, A, B, C, D, R> Validation<E, R> map4(final Validation<E, A> va, final Validation<E, B> vb, final Validation<E, C> vc, final Validation<E, D> vd,
+                                                           final Function<A, Function<B, Function<C, Function<D, R>>>> f) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 

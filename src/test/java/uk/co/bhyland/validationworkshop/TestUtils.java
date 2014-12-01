@@ -8,16 +8,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public final class TestUtils {
 
     private TestUtils() {}
 
-    public static <T> T fail(final Object... args) {
+    private static <T> T fail(final Object... args) {
         throw new AssertionError("unexpected call to fail with args " + Arrays.deepToString(args));
     }
 
-    public static <T, U> Function<T, U> failingFunction() {
+    public static <T> Supplier<T> failTheTestIfCalledSupplier() {
+        return TestUtils::fail;
+    }
+
+    public static <T, U> Function<T, U> failTheTestIfCalledFunction() {
         return TestUtils::fail;
     }
 

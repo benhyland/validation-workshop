@@ -22,6 +22,24 @@ public class ValidationTransformationTest {
     */
 
     @Test
+    public void shouldTransformSuccessWithFold() {
+
+        final Validation<Failure, String> v1 = success("yay");
+        final Integer l = v1.fold(String::length, failTheTestIfCalledFunction());
+
+        assertThat(l, is(3));
+    }
+
+    @Test
+    public void shouldTransformFailureWithFold() {
+
+        final Validation<Failure, String> v1 = failure(OH_DEAR, WHAT_A_PITY);
+        final Integer l = v1.fold(failTheTestIfCalledFunction(), List::size);
+
+        assertThat(l, is(2));
+    }
+
+    @Test
     public void shouldTransformSuccessWithMap() {
 
         final Validation<Failure, String> v1 = success("yay");
@@ -34,27 +52,9 @@ public class ValidationTransformationTest {
     public void shouldNotTransformFailureWithMap() {
 
         final Validation<Failure, String> v1 = failure(OH_DEAR);
-        final Validation<Failure, Integer> v2 = v1.map(failingFunction());
+        final Validation<Failure, Integer> v2 = v1.map(failTheTestIfCalledFunction());
 
-        assertThat(v1, is(v2));
-    }
-
-    @Test
-    public void shouldTransformSuccessWithFold() {
-
-        final Validation<Failure, String> v1 = success("yay");
-        final Integer l = v1.fold(String::length, failingFunction());
-
-        assertThat(l, is(3));
-    }
-
-    @Test
-    public void shouldTransformFailureWithFold() {
-
-        final Validation<Failure, String> v1 = failure(OH_DEAR, WHAT_A_PITY);
-        final Integer l = v1.fold(failingFunction(), List::size);
-
-        assertThat(l, is(2));
+        assertThat(v2, isFailureOf(OH_DEAR));
     }
 
     @Test
@@ -72,9 +72,9 @@ public class ValidationTransformationTest {
     public void shouldNotTransformFailureWithFlatMap() {
 
         final Validation<Failure, String> v1 = failure(OH_DEAR);
-        final Validation<Failure, Integer> v2 = v1.flatMap(failingFunction());
+        final Validation<Failure, Integer> v2 = v1.flatMap(failTheTestIfCalledFunction());
 
-        assertThat(v1, is(v2));
+        assertThat(v2, isFailureOf(OH_DEAR));
     }
 
     @Test
