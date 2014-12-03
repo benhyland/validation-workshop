@@ -52,6 +52,12 @@ public class AdvancedValidationTest {
         assertThat(v3, isFailureOf(OH_DEAR, WHAT_A_PITY, NOT_MY_FAULT_GUV));
     }
 
+    /*
+    Before moving on, examine your implementation of apply(). What does it achieve?
+    Can you make Validation.apply() final? If not, consider refactoring until you can.
+    You will probably need some confidence with apply() to use it in the remaining tasks, and performing this refactoring might make its structure clearer.
+    */
+
     @Test
     public void shouldSequenceListOfSuccessValidations() {
 

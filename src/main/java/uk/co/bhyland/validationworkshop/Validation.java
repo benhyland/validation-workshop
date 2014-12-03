@@ -18,7 +18,7 @@ public abstract class Validation<E, T> {
 
     /*
     Implement the following to make the tests pass.
-    Feel free to change anything about the implementation, so long as the tests still pass and the intent of the class remains.
+    Feel free to add to or change anything about the implementation, so long as the tests still pass and the intent of the class remains.
     */
 
     private Validation() {}
@@ -76,8 +76,17 @@ public abstract class Validation<E, T> {
         return tail;
     }
 
+    // You may find this utility function useful
+    protected static <A> List<A> combineLists(final List<A> first, final List<A> second) {
+        final List<A> combined = new ArrayList<>();
+        combined.addAll(first);
+        combined.addAll(second);
+        return combined;
+    }
+
     /**
      * Return the success value of this Validation, if it represents a success; otherwise, return the supplied default value.
+     * The given supplier should only be invoked if its return value is required.
      */
     public T getOrElse(Supplier<T> defaultValue) {
         throw new UnsupportedOperationException("not implemented yet");
@@ -85,6 +94,7 @@ public abstract class Validation<E, T> {
 
     /**
      * Return this Validation, if it represents a success; otherwise, return the supplied default Validation.
+     * The given supplier should only be invoked if its return value is required.
      */
     public Validation<E, T> orElse(final Supplier<Validation<E, T>> defaultValue) {
         throw new UnsupportedOperationException("not implemented yet");
@@ -93,7 +103,10 @@ public abstract class Validation<E, T> {
     /**
      * Run exactly one of the two provided functions, depending on what this Validation represents.
      * Return the result of the selected function.
-     * Hint for later tasks: many things can be implemented in terms of fold.
+     *
+     * Hint for later tasks:
+     *      Many things can be implemented in terms of fold.
+     *      What procedural code structure is represented by fold?
      */
     public <U> U fold(final Function<T, U> ifSuccess, final Function<List<E>, U> ifFailure) {
         throw new UnsupportedOperationException("not implemented yet");
@@ -101,6 +114,8 @@ public abstract class Validation<E, T> {
 
     /**
      * Convenience to perform an effect using the success value if this Validation represents a success.
+     * The consumer should not be invoked if this Validation represents a failure.
+     *
      * Not tested: implementing this is optional.
      */
     public void ifSuccess(final Consumer<T> ifSuccess) {
@@ -109,6 +124,8 @@ public abstract class Validation<E, T> {
 
     /**
      * Convenience to perform an effect using the failure values if this Validation represents a failure.
+     * The consumer should not be invoked if this Validation represents a success.
+     *
      * Not tested: implementing this is optional.
      */
     public void ifFailure(final Consumer<List<E>> ifFailure) {
@@ -118,6 +135,7 @@ public abstract class Validation<E, T> {
     /**
      * If this Validation represents a success, return a Validation containing the success value transformed by the given function;
      * otherwise, return a Validation containing the error values.
+     * The given function should only be invoked if its return value is required.
      */
     public <U> Validation<E, U> map(final Function<T, U> f) {
         throw new UnsupportedOperationException("not implemented yet");
@@ -126,6 +144,7 @@ public abstract class Validation<E, T> {
     /**
      * If this Validation represents a success, return the success value transformed to a Validation by the given function;
      * otherwise, return a Validation containing the error values.
+     * The given function should only be invoked if its return value is required.
      */
     public <U> Validation<E, U> flatMap(final Function<T, Validation<E, U>> f) {
         throw new UnsupportedOperationException("not implemented yet");
@@ -152,9 +171,13 @@ public abstract class Validation<E, T> {
     /**
      * If both this Validation and the given Validation represent successes,
      * return a Validation containing the success value of this Validation transformed by the success value of the given Validation;
-     * otherwise, return a Validation containing the all the available error values.
+     * otherwise, return a Validation containing the all the available error values, and do not invoke the function that might be contained in the argument.
+     *
+     * Hint for later tasks:
+     *      Many things can be implemented in terms of fold and apply.
+     *      Consider making Validation.apply() final before continuing, as this should help make its structure clear.
      */
-    public <U> Validation<E, U> apply(final Validation<E, Function<T, U>> functionValidation) {
+    public /*final*/ <U> Validation<E, U> apply(final Validation<E, Function<T, U>> functionValidation) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -162,6 +185,7 @@ public abstract class Validation<E, T> {
      * Transform the given list of Validations into a Validation of a List.
      * If any of the given Validations represented error values, then the resulting Validation contains all available errors;
      * otherwise, it contains a List of all available success values.
+     * The given list should be considered in order.
      */
     public static <E, T> Validation<E, List<T>> sequence(final List<Validation<E, T>> validations) {
         throw new UnsupportedOperationException("not implemented yet");
@@ -171,6 +195,8 @@ public abstract class Validation<E, T> {
      * Transform the given list of Validations into a Validation of a List.
      * If any of the given Validations represented error values, then the resulting Validation contains all available errors;
      * otherwise, it contains a List of all available success values, each transformed by the given function.
+     * The given list should be considered in order.
+     * Once it can be determined that the return value will represent a failure, no further invocations of the given function should occur.
      */
     public static <E, T, U> Validation<E, List<U>> traverse(final List<Validation<E, T>> validations, final Function<T, U> f) {
         throw new UnsupportedOperationException("not implemented yet");
@@ -197,6 +223,7 @@ public abstract class Validation<E, T> {
     /**
      * If any of the given Validations represented error values, then the resulting Validation contains all available errors;
      * otherwise, it contains the result of transforming the success values of the given Validations with the given curried function.
+     *
      * Not tested: implementing this is optional.
      */
     public static <E, A, B, C, D, R> Validation<E, R> map4(final Validation<E, A> va, final Validation<E, B> vb, final Validation<E, C> vc, final Validation<E, D> vd,
