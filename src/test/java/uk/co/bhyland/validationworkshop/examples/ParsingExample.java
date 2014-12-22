@@ -44,8 +44,8 @@ public class ParsingExample {
 
     private String formatParseResult(Validation<String, Message> result) {
         return result.fold(
-                m -> "successfully parsed message from " + m.from,
-                es -> "failed to parse message: " + es.stream().collect(Collectors.joining(", "))
+                es -> "failed to parse message: " + es.stream().collect(Collectors.joining(", ")),
+                m -> "successfully parsed message from " + m.from
                 );
     }
 

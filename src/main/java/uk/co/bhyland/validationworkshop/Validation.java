@@ -88,7 +88,7 @@ public abstract class Validation<E, T> {
      * Return the success value of this Validation, if it represents a success; otherwise, return the supplied default value.
      * The given supplier should only be invoked if its return value is required.
      */
-    public T getOrElse(Supplier<T> defaultValue) {
+    public T getOrElse(final Supplier<T> defaultValue) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -108,7 +108,7 @@ public abstract class Validation<E, T> {
      *      Many things can be implemented in terms of fold.
      *      What procedural code structure is represented by fold?
      */
-    public <U> U fold(final Function<T, U> ifSuccess, final Function<List<E>, U> ifFailure) {
+    public <U> U fold(final Function<List<E>, U> ifFailure, final Function<T, U> ifSuccess) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 

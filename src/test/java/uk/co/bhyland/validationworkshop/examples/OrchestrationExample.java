@@ -64,9 +64,9 @@ public class OrchestrationExample {
 
     private String formatOutput(Validation<String, List<String>> output) {
         return output.fold(
-                results -> "all tasks completed successfully:\n" + results.stream().collect(Collectors.joining("\n")),
-                errors -> "errors encountered:\n" + errors.stream().collect(Collectors.joining("\n"))
-        );
+                errors -> "errors encountered:\n" + errors.stream().collect(Collectors.joining("\n")),
+                results -> "all tasks completed successfully:\n" + results.stream().collect(Collectors.joining("\n"))
+                );
     }
 
     private Validation<String, Result> tryRunRemoteTask(Future<Validation<String, Result>> futureTask) {

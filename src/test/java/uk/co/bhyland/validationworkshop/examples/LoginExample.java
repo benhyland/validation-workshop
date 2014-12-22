@@ -52,8 +52,8 @@ public class LoginExample {
 
     private String formatLoginResult(Validation<String, User> result) {
         return result.fold(
-                user -> "logged in " + user.username,
-                errors -> "failed to log in: " + errors.get(0)
+                errors -> "failed to log in: " + errors.get(0),
+                user -> "logged in " + user.username
         );
     }
 

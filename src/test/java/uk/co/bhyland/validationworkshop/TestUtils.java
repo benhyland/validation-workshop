@@ -30,7 +30,7 @@ public final class TestUtils {
         return new TypeSafeMatcher<Validation<E, T>>() {
             @Override
             protected boolean matchesSafely(Validation<E, T> candidate) {
-                return candidate.fold(t -> t.equals(value), es -> false);
+                return candidate.fold(es -> false, t -> t.equals(value));
             }
 
             @Override
@@ -49,7 +49,7 @@ public final class TestUtils {
         return new TypeSafeMatcher<Validation<E, T>>() {
             @Override
             protected boolean matchesSafely(Validation<E, T> candidate) {
-                return candidate.fold(t -> false, es -> es.equals(expected));
+                return candidate.fold(es -> es.equals(expected), t -> false);
             }
 
             @Override

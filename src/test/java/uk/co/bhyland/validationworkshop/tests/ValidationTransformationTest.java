@@ -25,7 +25,7 @@ public class ValidationTransformationTest {
     public void shouldTransformSuccessWithFold() {
 
         final Validation<Failure, String> v1 = success("yay");
-        final Integer l = v1.fold(String::length, failTheTestIfCalledFunction());
+        final Integer l = v1.fold(failTheTestIfCalledFunction(), String::length);
 
         assertThat(l, is(3));
     }
@@ -34,7 +34,7 @@ public class ValidationTransformationTest {
     public void shouldTransformFailureWithFold() {
 
         final Validation<Failure, String> v1 = failure(OH_DEAR, WHAT_A_PITY);
-        final Integer l = v1.fold(failTheTestIfCalledFunction(), List::size);
+        final Integer l = v1.fold(List::size, failTheTestIfCalledFunction());
 
         assertThat(l, is(2));
     }
